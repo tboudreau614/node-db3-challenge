@@ -1,13 +1,11 @@
 const express = require('express');
-
 const Schemes = require('./scheme-model.js');
-
 const router = express.Router();
 
 router.get('/', (req, res) => {
   Schemes.find()
-  .then(schemes => {
-    res.json(schemes);
+  .then(getschemes => {
+    res.json(getschemes);
   })
   .catch(err => {
     res.status(500).json({ message: 'Failed to get schemes' });
@@ -18,9 +16,9 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
 
   Schemes.findById(id)
-  .then(scheme => {
-    if (scheme) {
-      res.json(scheme);
+  .then(schemeid => {
+    if (schemeid) {
+      res.json(schemeid);
     } else {
       res.status(404).json({ message: 'Could not find scheme with given id.' })
     }
@@ -50,8 +48,8 @@ router.post('/', (req, res) => {
   const schemeData = req.body;
 
   Schemes.add(schemeData)
-  .then(scheme => {
-    res.status(201).json(scheme);
+  .then(newscheme => {
+    res.status(201).json(newscheme);
   })
   .catch (err => {
     res.status(500).json({ message: 'Failed to create new scheme' });
@@ -63,11 +61,11 @@ router.post('/:id/steps', (req, res) => {
   const { id } = req.params; 
 
   Schemes.findById(id)
-  .then(scheme => {
-    if (scheme) {
+  .then(newstep => {
+    if (newstep) {
       Schemes.addStep(stepData, id)
-      .then(step => {
-        res.status(201).json(step);
+      .then(scheme => {
+        res.status(201).json(scheme);
       })
     } else {
       res.status(404).json({ message: 'Could not find scheme with given id.' })
@@ -83,8 +81,8 @@ router.put('/:id', (req, res) => {
   const changes = req.body;
 
   Schemes.findById(id)
-  .then(scheme => {
-    if (scheme) {
+  .then(updatescheme => {
+    if (updatescheme) {
       Schemes.update(changes, id)
       .then(updatedScheme => {
         res.json(updatedScheme);
